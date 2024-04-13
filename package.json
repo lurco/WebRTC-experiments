@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "build": "gh-pages -d build"
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "peerjs": "^1.5.2",
