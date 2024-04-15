@@ -12,11 +12,20 @@ function OtherWebRtcComponent({othersIds, peer, index, mvOtherId}) {
         conn.on('open', () => {
             conn.send(`Connected to ${othersIds[index]}!`);
         });
+
+        conn.on('error', (err) => {
+            console.error('Connection error:', err);
+        });
+
+        peer.on('error', (err) => {
+            console.error('Peer error:', err);
+        });
+
         setConnection(conn);
 
-        return () => {
-            conn.close();
-        }
+        // return () => {
+        //     conn.close();
+        // }
     }, [isConnecting]);
 
 
