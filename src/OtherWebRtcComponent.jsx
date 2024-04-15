@@ -5,7 +5,7 @@ function OtherWebRtcComponent({othersIds, peer, index, mvOtherId}) {
     const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
-        if (!isConnecting) {
+        if (!isConnecting || !peer) {
             return;
         }
         const conn = peer.connect(`lurco_${othersIds[index]}`);
