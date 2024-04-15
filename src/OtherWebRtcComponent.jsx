@@ -26,7 +26,8 @@ function OtherWebRtcComponent({othersIds, peer, index, mvOtherId}) {
             <input type="text" value={othersIds[index]} onChange={(e) => {
                 mvOtherId(index, e.target.value)
             }}/>
-            <button onClick={() => {
+            <button onClick={(e) => {
+                e.preventDefault();
                 setIsConnecting(true);
             }}>Utwórz połączenie
             </button>
