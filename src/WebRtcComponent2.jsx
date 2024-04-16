@@ -70,21 +70,23 @@ function WebRtcComponent2() {
     useEffect(() => {
         window.pc = state.pc;
         state.pc.onicecandidate = (event) => {
-            // if (event.candidate) {
-            console.log('ICE!')
-            console.log(`new local ice candidate: ${event.candidate}`);
-            // state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
-            dispatch({type: 'ADD_LOCAL_ICE_CANDIDATE', payload: event.candidate});
-            // }
+            if (event.candidate) {
+                console.log(`new local ice candidate: ${JSON.stringify(event.candidate)}`);
+                // state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
+                dispatch({type: 'ADD_LOCAL_ICE_CANDIDATE', payload: (event.candidate)});
+            }
         }
-        if (state.dataChannel) {
+        if (state.dataChannel &&
+            !state.dataChannel.onopen &&
+            !state.dataChannel.onmessage &&
+            !state.dataChannel.onclose
+        ) {
             state.dataChannel.onopen = () => {
                 console.log('Data channel is open');
             };
 
             state.dataChannel.onmessage = (event) => {
                 console.log('Received message:', event.data);
-                // Display the message in your chat
                 chatRef.current.textContent += `\n${event.data}`;
             };
 
@@ -101,7 +103,7 @@ function WebRtcComponent2() {
                 state.pc.close();
             }
         }
-    }, []);
+    }, [state.dataChannel]);
 
     return (
         <div>
