@@ -17,6 +17,7 @@ function WebRtcComponent2() {
                 dispatch({type: 'SET_LOCAL_DESCRIPTION', payload: offer});
                 const dataChannel = state.pc.createDataChannel('chat');
                 dispatch({type: 'SET_DATA_CHANNEL', payload: dataChannel});
+                window.dc = dataChannel;
             });
     }
 
@@ -33,6 +34,9 @@ function WebRtcComponent2() {
                                 console.log(`new local answer: ${JSON.stringify(answer)}`);
                                 dispatch({type: 'SET_LOCAL_DESCRIPTION', payload: answer});
                                 dispatch({type: 'SET_REMOTE_DESCRIPTION', payload: remoteDescription});
+                                const dataChannel = state.pc.createDataChannel('chat');
+                                dispatch({type: 'SET_DATA_CHANNEL', payload: dataChannel});
+                                window.dc = dataChannel;
                             });
                     })
                     .catch((error) => {
@@ -69,26 +73,27 @@ function WebRtcComponent2() {
             // if (event.candidate) {
             console.log('ICE!')
             console.log(`new local ice candidate: ${event.candidate}`);
-            state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
+            // state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
             dispatch({type: 'ADD_LOCAL_ICE_CANDIDATE', payload: event.candidate});
             // }
         }
-            if (state.dataChannel) {
-                state.dataChannel.onopen = () => {
-                    console.log('Data channel is open');
-                };
+        if (state.dataChannel) {
+            state.dataChannel.onopen = () => {
+                console.log('Data channel is open');
+            };
 
-                state.dataChannel.onmessage = (event) => {
-                    console.log('Received message:', event.data);
-                    // Display the message in your chat
-                    chatRef.current.textContent += `\n${event.data}`;
-                };
+            state.dataChannel.onmessage = (event) => {
+                console.log('Received message:', event.data);
+                // Display the message in your chat
+                chatRef.current.textContent += `\n${event.data}`;
+            };
 
-                state.dataChannel.onclose = () => {
-                    console.log('Data channel is closed');
-                };
-            }
+            state.dataChannel.onclose = () => {
+                console.log('Data channel is closed');
+            };
+        }
 
+        window.state = state;
 
         if (state.dataChannel && state.pc) {
             return () => {
