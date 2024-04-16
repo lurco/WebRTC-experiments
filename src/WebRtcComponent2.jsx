@@ -22,18 +22,25 @@ function WebRtcComponent2() {
 
     const handleAcceptOffer = () => {
         if (state.pc.signalingState !== 'closed') {
-            const remoteDescription = JSON.parse(remoteDescriptionRef.current.value);
-            state.pc
-                .setRemoteDescription(remoteDescription)
-                .then(() => {
-                    state.pc
-                        .createAnswer()
-                        .then((answer) => {
-                            console.log(`new local answer: ${JSON.stringify(answer)}`);
-                            dispatch({type: 'SET_REMOTE_DESCRIPTION', payload: answer});
-                        });
-                })
-                .catch((error) => console.error('error setting remote description', error));
+            try {
+                const remoteDescription = JSON.parse(remoteDescriptionRef.current.value);
+                state.pc
+                    .setRemoteDescription(remoteDescription)
+                    .then(() => {
+                        state.pc
+                            .createAnswer()
+                            .then((answer) => {
+                                console.log(`new local answer: ${JSON.stringify(answer)}`);
+                                dispatch({type: 'SET_LOCAL_DESCRIPTION', payload: answer});
+                                dispatch({type: 'SET_REMOTE_DESCRIPTION', payload: remoteDescription});
+                            });
+                    })
+                    .catch((error) => {
+                        console.error('Error setting remote description:', error);
+                    });
+            } catch (error) {
+                console.error('Error parsing remote description:', error);
+            }
 
         }
     }
@@ -46,7 +53,6 @@ function WebRtcComponent2() {
                 .then(() => {
                     console.log('Remote description set');
                 })
-                .catch((error) => console.error('error setting remote description', error));
         }
     }
 
@@ -58,13 +64,15 @@ function WebRtcComponent2() {
     }
 
     useEffect(() => {
+        window.pc = state.pc;
         state.pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                console.log(`new local ice candidate: ${event.candidate}`);
-                state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
-                dispatch({type: 'ADD_LOCAL_ICE_CANDIDATE', payload: event.candidate});
-            }
-
+            // if (event.candidate) {
+            console.log('ICE!')
+            console.log(`new local ice candidate: ${event.candidate}`);
+            state.pc.addIceCandidate(event.candidate).catch(() => console.error('error adding local ice candidate'));
+            dispatch({type: 'ADD_LOCAL_ICE_CANDIDATE', payload: event.candidate});
+            // }
+        }
             if (state.dataChannel) {
                 state.dataChannel.onopen = () => {
                     console.log('Data channel is open');
@@ -80,7 +88,7 @@ function WebRtcComponent2() {
                     console.log('Data channel is closed');
                 };
             }
-        }
+
 
         if (state.dataChannel && state.pc) {
             return () => {
@@ -88,7 +96,7 @@ function WebRtcComponent2() {
                 state.pc.close();
             }
         }
-    }, [state]);
+    }, []);
 
     return (
         <div>
@@ -100,7 +108,8 @@ function WebRtcComponent2() {
             <p ref={chatRef}>Tutaj chat</p>
             {isCaller && <button onClick={handleCreateOffer}>Zainicjuj połączenie</button>}
             <input type="text" ref={remoteDescriptionRef}/>
-            <button onClick={isCaller ? handleAcceptAnswer : handleAcceptOffer}>Przyjmij {isCaller ? 'odpowiedź' : 'połączenie'}</button>
+            <button
+                onClick={isCaller ? handleAcceptAnswer : handleAcceptOffer}>Przyjmij {isCaller ? 'odpowiedź' : 'połączenie'}</button>
             <hr/>
             <input type="text" ref={remoteIceCandidatesRef}/>
             <button onClick={handleAddRemoteIceCandidate}>Dodaj kandydata ICE</button>

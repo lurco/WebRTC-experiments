@@ -3,7 +3,9 @@ export default  (state, action) => {
         case 'SET_PC':
             return {...state, pc: action.payload};
         case 'SET_LOCAL_DESCRIPTION':
-            state.pc.setLocalDescription(action.payload).catch(() => console.error('error setting local description'));
+            state.pc.setLocalDescription(action.payload)
+                .then(() => console.log('local description set'))
+                .catch(() => console.error('error setting local description'));
             return {...state};
         case 'SET_REMOTE_DESCRIPTION':
             state.pc.setRemoteDescription(action.payload).catch(() => console.error('error setting remote description'));
