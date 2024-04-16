@@ -1,28 +1,19 @@
 const servers = { // stun servers
-    iceServers: [
+    iceservers: [
         {
-            urls: "stun:stun.relay.metered.ca:80",
-        },
-        {
-            urls: "turn:eu.relay.metered.ca:80",
-            username: "fc0df59808e9b6ca61e35dca",
-            credential: "olSo+Tft0Wq/iU7H",
-        },
-        {
-            urls: "turn:eu.relay.metered.ca:80?transport=tcp",
-            username: "fc0df59808e9b6ca61e35dca",
-            credential: "olSo+Tft0Wq/iU7H",
-        },
-        {
-            urls: "turn:eu.relay.metered.ca:443",
-            username: "fc0df59808e9b6ca61e35dca",
-            credential: "olSo+Tft0Wq/iU7H",
-        },
-        {
-            urls: "turns:eu.relay.metered.ca:443?transport=tcp",
-            username: "fc0df59808e9b6ca61e35dca",
-            credential: "olSo+Tft0Wq/iU7H",
-        },
+            urls: [
+                "stun1.l.google.com:19302",
+                "23.21.150.121:3478",
+                "iphone-stun.strato-iphone.de:3478",
+                "numb.viagenie.ca:3478",
+                "s1.taraba.net:3478",
+                "s2.taraba.net:3478",
+                "stun.12connect.com:3478",
+                "stun.12voip.com:3478",
+                "stun.1und1.de:3478",
+                "stun.2talk.co.nz:3478",
+            ]
+        }
     ],
     iceCandidatePoolSize: 10,
 }

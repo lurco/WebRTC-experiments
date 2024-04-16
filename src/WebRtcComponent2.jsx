@@ -10,13 +10,13 @@ function WebRtcComponent2() {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const handleCreateOffer = () => {
+        const dataChannel = state.pc.createDataChannel('chat');
+        dispatch({type: 'SET_DATA_CHANNEL', payload: dataChannel});
         state.pc
             .createOffer()
             .then((offer) => {
                 console.log(`new local offer: ${JSON.stringify(offer)}`)
                 dispatch({type: 'SET_LOCAL_DESCRIPTION', payload: offer});
-                const dataChannel = state.pc.createDataChannel('chat');
-                dispatch({type: 'SET_DATA_CHANNEL', payload: dataChannel});
                 window.dc = dataChannel;
             });
     }
